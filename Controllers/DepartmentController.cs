@@ -10,22 +10,23 @@ using PeoplePro.Models;
 
 namespace PeoplePro.Controllers
 {
-    public class RoomsController : Controller
+    public class DepartmentController : Controller
     {
         private readonly PeopleProContext _context;
 
-        public RoomsController(PeopleProContext context)
+        public DepartmentController(PeopleProContext context)
         {
             _context = context;
         }
 
-        // GET: Rooms
+        // GET: Department
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Rooms.ToListAsync());
+            var peopleProContext = _context.Departments.Include(d => d.Room);
+            return View(await peopleProContext.ToListAsync());
         }
 
-        // GET: Rooms/Details/5
+        // GET: Department/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +34,42 @@ namespace PeoplePro.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms
+            var department = await _context.Departments
+                .Include(d => d.Room)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (room == null)
+            if (department == null)
             {
                 return NotFound();
             }
 
-            return View(room);
+            return View(department);
         }
 
-        // GET: Rooms/Create
+        // GET: Department/Create
         public IActionResult Create()
         {
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id");
             return View();
         }
 
-        // POST: Rooms/Create
+        // POST: Department/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Room room)
+        public async Task<IActionResult> Create([Bind("Id,Name,RoomId")] Department department)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(room);
+                _context.Add(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(room);
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id", department.RoomId);
+            return View(department);
         }
 
-        // GET: Rooms/Edit/5
+        // GET: Department/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +77,23 @@ namespace PeoplePro.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms.FindAsync(id);
-            if (room == null)
+            var department = await _context.Departments.FindAsync(id);
+            if (department == null)
             {
                 return NotFound();
             }
-            return View(room);
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id", department.RoomId);
+            return View(department);
         }
 
-        // POST: Rooms/Edit/5
+        // POST: Department/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Room room)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,RoomId")] Department department)
         {
-            if (id != room.Id)
+            if (id != department.Id)
             {
                 return NotFound();
             }
@@ -97,12 +102,12 @@ namespace PeoplePro.Controllers
             {
                 try
                 {
-                    _context.Update(room);
+                    _context.Update(department);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RoomExists(room.Id))
+                    if (!DepartmentExists(department.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +118,11 @@ namespace PeoplePro.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(room);
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id", department.RoomId);
+            return View(department);
         }
 
-        // GET: Rooms/Delete/5
+        // GET: Department/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +130,31 @@ namespace PeoplePro.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms
+            var department = await _context.Departments
+                .Include(d => d.Room)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (room == null)
+            if (department == null)
             {
                 return NotFound();
             }
 
-            return View(room);
+            return View(department);
         }
 
-        // POST: Rooms/Delete/5
+        // POST: Department/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
-            _context.Rooms.Remove(room);
+            var department = await _context.Departments.FindAsync(id);
+            _context.Departments.Remove(department);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RoomExists(int id)
+        private bool DepartmentExists(int id)
         {
-            return _context.Rooms.Any(e => e.Id == id);
+            return _context.Departments.Any(e => e.Id == id);
         }
     }
 }

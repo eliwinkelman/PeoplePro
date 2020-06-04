@@ -10,22 +10,22 @@ using PeoplePro.Models;
 
 namespace PeoplePro.Controllers
 {
-    public class RoomsController : Controller
+    public class RolesController : Controller
     {
         private readonly PeopleProContext _context;
 
-        public RoomsController(PeopleProContext context)
+        public RolesController(PeopleProContext context)
         {
             _context = context;
         }
 
-        // GET: Rooms
+        // GET: Roles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Rooms.ToListAsync());
+            return View(await _context.Roles.ToListAsync());
         }
 
-        // GET: Rooms/Details/5
+        // GET: Roles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace PeoplePro.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms
+            var role = await _context.Roles
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (room == null)
+            if (role == null)
             {
                 return NotFound();
             }
 
-            return View(room);
+            return View(role);
         }
 
-        // GET: Rooms/Create
+        // GET: Roles/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Rooms/Create
+        // POST: Roles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Room room)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Role role)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(room);
+                _context.Add(role);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(room);
+            return View(role);
         }
 
-        // GET: Rooms/Edit/5
+        // GET: Roles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace PeoplePro.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms.FindAsync(id);
-            if (room == null)
+            var role = await _context.Roles.FindAsync(id);
+            if (role == null)
             {
                 return NotFound();
             }
-            return View(room);
+            return View(role);
         }
 
-        // POST: Rooms/Edit/5
+        // POST: Roles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Room room)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Role role)
         {
-            if (id != room.Id)
+            if (id != role.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace PeoplePro.Controllers
             {
                 try
                 {
-                    _context.Update(room);
+                    _context.Update(role);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RoomExists(room.Id))
+                    if (!RoleExists(role.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace PeoplePro.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(room);
+            return View(role);
         }
 
-        // GET: Rooms/Delete/5
+        // GET: Roles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace PeoplePro.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms
+            var role = await _context.Roles
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (room == null)
+            if (role == null)
             {
                 return NotFound();
             }
 
-            return View(room);
+            return View(role);
         }
 
-        // POST: Rooms/Delete/5
+        // POST: Roles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
-            _context.Rooms.Remove(room);
+            var role = await _context.Roles.FindAsync(id);
+            _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RoomExists(int id)
+        private bool RoleExists(int id)
         {
-            return _context.Rooms.Any(e => e.Id == id);
+            return _context.Roles.Any(e => e.Id == id);
         }
     }
 }
